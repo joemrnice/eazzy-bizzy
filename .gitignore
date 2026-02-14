@@ -1,0 +1,32 @@
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Uploads
+assets/images/uploads/*
+!assets/images/uploads/.gitkeep
+
+# Temp
+tmp/
+temp/
+
+# Dependencies (if using Composer in future)
+vendor/
+composer.lock
+
+# Database
+*.sql.bak
