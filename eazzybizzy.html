@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EazzyBizzy – Best Electronics & Home Appliances Online">
+  <title>EazzyBizzy | Electronics & Home Appliances</title>
+  
+  <!-- External Dependencies -->
+  <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0ea5e9',
+            primaryDark: '#0284c7',
+            accent: '#f97316',
+            accentDark: '#ea580c',
+            dark: '#0f172a',
+            surface: '#f8fafc'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* CSS Variables */
+    :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --accent: #f97316;
+      --accent-dark: #ea580c;
+      --dark: #0f172a;
+      --surface: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    
+    /* Base Resets */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+    
+    /* Animations */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+    
+    @keyframes tickerScroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    
+    @keyframes bounceSlow {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+    
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .fade-up {
+      animation: fadeUp 0.6s ease-out;
+    }
+    
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+    
+    /* Ticker Bar */
+    .ticker-wrapper {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    
+    .ticker-content {
+      display: inline-block;
+      animation: tickerScroll 30s linear infinite;
+    }
+    
+    /* Frosted Glass Effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Product Card Styles */
+    .product-card {
+      transition: all 0.3s ease;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.10);
+    }
+    
+    .category-card {
+      transition: all 0.3s ease;
+    }
+    
+    .category-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--primary);
+      box-shadow: 0 16px 40px rgba(14, 165, 233, 0.2);
+    }
+    
+    /* Cart Sidebar */
+    .cart-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .cart-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .cart-sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 380px;
+      max-width: 95vw;
+      background: white;
+      z-index: 9999;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .cart-sidebar.active {
+      transform: translateX(0);
+    }
+    
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      max-width: 280px;
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    
+    .toast-success {
+      background: #10b981;
+    }
+    
+    .toast-error {
+      background: #ef4444;
+    }
+    
+    .toast-info {
+      background: #3b82f6;
+    }
+    
+    /* Navbar Scroll Effect */
+    .navbar.scrolled {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 68px;
+      left: 0;
+      width: 100%;
+      background: white;
+      z-index: 999;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mobile-menu.active {
+      max-height: 500px;
+    }
+    
+    /* Button Styles */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(14, 165, 233, 0.35);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(14, 165, 233, 0.45);
+    }
+    
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-accent:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+    
+    .btn-outline:hover {
+      background: white;
+      color: var(--dark);
+    }
+    
+    /* Wishlist Active State */
+    .wishlist-btn.active {
+      color: #ef4444;
+    }
+    
+    /* Badge Styles */
+    .badge-hot {
+      background: #ef4444;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge-sale {
+      background: var(--accent);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge-new {
+      background: #10b981;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Tab Styles */
+    .tab-btn {
+      padding: 0.75rem 1.25rem;
+      font-weight: 500;
+      color: var(--muted);
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .tab-btn.active {
+      color: var(--text);
+      font-weight: 700;
+      border-bottom-color: var(--primary);
+    }
+    
+    .tab-btn:hover {
+      color: var(--text);
+    }
+    
+    /* Product Filter Animation */
+    .product-item {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    .product-item.hidden {
+      opacity: 0;
+      transform: scale(0.9);
+      height: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- STEP 3: Announcement/Ticker Bar -->
+  <div class="w-full bg-gradient-to-r from-dark via-[#1e3a5f] to-dark" style="height: 32px; overflow: hidden;">
+    <div class="max-w-[1400px] mx-auto h-full flex items-center justify-between px-4">
+      <div class="ticker-wrapper flex-1">
+        <div class="ticker-content text-[0.72rem] text-slate-400" style="letter-spacing: 0.4px;">
+          <span>🔥 FLASH SALE — Up to 60% OFF Samsung TVs  |  🚚 Free Delivery on orders over $49  |  🔒 2-Year Warranty on all Appliances  |  🎁 Buy 2 Get 1 FREE on Accessories  |  ⚡ Same-Day Delivery Available in select cities  |  </span>
+          <span>🔥 FLASH SALE — Up to 60% OFF Samsung TVs  |  🚚 Free Delivery on orders over $49  |  🔒 2-Year Warranty on all Appliances  |  🎁 Buy 2 Get 1 FREE on Accessories  |  ⚡ Same-Day Delivery Available in select cities  |  </span>
+        </div>
+      </div>
+      <div class="text-[0.72rem] text-slate-400 ml-4 hidden sm:block" style="letter-spacing: 0.4px;">
+        Need help? 1-800-EAZZY-BIZ
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Primary Navigation Bar -->
+  <nav class="navbar sticky top-0 z-[1000] bg-white transition-all duration-300">
+    <div class="max-w-[1400px] mx-auto px-4 flex items-center justify-between" style="height: 68px;">
+      
+      <!-- Logo -->
+      <div class="flex items-center gap-1">
+        <span class="text-2xl">⚡</span>
+        <a href="#" class="text-[1.55rem] font-black tracking-tight">
+          <span class="text-primary">Eazzy</span><span class="text-accent">Bizzy</span>
+        </a>
+      </div>
+      
+      <!-- Search Bar (Desktop) -->
+      <div class="hidden lg:flex flex-1 max-w-[560px] mx-8">
+        <div class="flex w-full items-center bg-surface rounded-full border border-border overflow-hidden focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all">
+          <select class="px-4 py-2 bg-transparent border-none outline-none text-sm text-muted cursor-pointer">
+            <option>All</option>
+            <option>Phones</option>
+            <option>Laptops</option>
+            <option>TVs</option>
+            <option>Audio</option>
+            <option>Fridges</option>
+            <option>Washing Machines</option>
+            <option>Air Conditioners</option>
+            <option>Cameras</option>
+          </select>
+          <input 
+            type="text" 
+            placeholder="Search for products..." 
+            class="flex-1 px-4 py-2 bg-transparent border-none outline-none text-sm"
+            id="search-input"
+          >
+          <button class="btn-primary px-6 py-2 rounded-full text-sm">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Nav Action Buttons -->
+      <div class="flex items-center gap-4">
+        <!-- Mobile Search -->
+        <button class="lg:hidden flex flex-col items-center gap-1 p-2 hover:text-primary transition-colors">
+          <i class="fas fa-search text-lg"></i>
+        </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="lg:hidden flex flex-col items-center gap-1 p-2 hover:text-primary transition-colors" id="mobile-menu-btn">
+          <i class="fas fa-bars text-lg"></i>
+        </button>
+        
+        <!-- Account -->
+        <button class="hidden lg:flex flex-col items-center gap-1 p-2 hover:text-primary transition-all hover:-translate-y-0.5">
+          <i class="fas fa-user text-lg"></i>
+          <span class="text-xs">Account</span>
+        </button>
+        
+        <!-- Wishlist -->
+        <button class="hidden lg:flex flex-col items-center gap-1 p-2 hover:text-primary transition-all hover:-translate-y-0.5">
+          <i class="far fa-heart text-lg"></i>
+          <span class="text-xs">Wishlist</span>
+        </button>
+        
+        <!-- Cart -->
+        <button class="flex flex-col items-center gap-1 p-2 hover:text-primary transition-all hover:-translate-y-0.5 relative" id="cart-btn">
+          <i class="fas fa-shopping-cart text-lg"></i>
+          <span class="text-xs hidden sm:inline">Cart</span>
+          <span class="absolute -top-1 -right-1 bg-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" id="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="p-4 flex flex-col gap-2">
+      <a href="#" class="px-4 py-3 hover:bg-surface rounded-lg transition-colors flex items-center gap-3">
+        <i class="fas fa-user w-5"></i>
+        <span>Account</span>
+      </a>
+      <a href="#" class="px-4 py-3 hover:bg-surface rounded-lg transition-colors flex items-center gap-3">
+        <i class="far fa-heart w-5"></i>
+        <span>Wishlist</span>
+      </a>
+      <a href="#deals" class="px-4 py-3 hover:bg-surface rounded-lg transition-colors flex items-center gap-3">
+        <i class="fas fa-tag w-5"></i>
+        <span>Deals</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- STEP 5: Category Navigation Strip -->
+  <div class="w-full bg-dark border-b-2 border-primary">
+    <div class="max-w-[1400px] mx-auto px-4 overflow-x-auto">
+      <div class="flex items-center gap-6 py-3 whitespace-nowrap">
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>🏠</span> All
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>📱</span> Smartphones
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>💻</span> Laptops
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>📺</span> TVs & Displays
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>🎧</span> Audio
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>📷</span> Cameras
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>❄️</span> Refrigerators
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>🌀</span> Washing Machines
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>💨</span> Air Conditioners
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>🍳</span> Kitchen Appliances
+        </a>
+        <a href="#" class="category-link flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary">
+          <span>🔌</span> Accessories
+        </a>
+        <a href="#deals" class="category-link flex items-center gap-2 text-sm text-accent hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-primary relative">
+          <span>🏷️</span> Deals
+          <span class="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Hero Section -->
+  <section class="w-full" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 35%, #0c4a6e 65%, #075985 100%); position: relative; min-height: 520px;">
+    <div style="position: absolute; top: 50%; left: 70%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%); filter: blur(60px); pointer-events: none;"></div>
+    
+    <div class="max-w-[1400px] mx-auto px-4 py-16 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        <!-- Left Column - Copy & CTA -->
+        <div class="fade-up">
+          <div class="inline-block px-4 py-2 rounded-full text-accent text-xs font-bold uppercase mb-6" style="background: rgba(249,115,22,0.15); letter-spacing: 0.5px;">
+            🔥 MEGA SALE — Up to 70% Off
+          </div>
+          
+          <h1 class="text-white font-black mb-6" style="font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.1; letter-spacing: -1px;">
+            Your Smart Home,<br>
+            <span class="text-primary">Smarter</span> Deals.
+          </h1>
+          
+          <p class="text-slate-300 mb-8 max-w-[440px]" style="font-size: 1rem; line-height: 1.7;">
+            Shop thousands of electronics and home appliances — top brands, unbeatable prices, delivered fast.
+          </p>
+          
+          <div class="flex flex-wrap gap-4">
+            <button class="btn-primary">
+              🛍️ Shop Now
+            </button>
+            <button class="btn-outline">
+              ▶ Watch Demo
+            </button>
+          </div>
+        </div>
+        
+        <!-- Right Column - Featured Product Cards -->
+        <div class="hidden lg:flex flex-col gap-4">
+          <!-- Card 1 -->
+          <div class="glass rounded-2xl p-5 hover:-translate-x-2 transition-all duration-300 fade-up delay-1">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-3xl">
+                📺
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-bold text-sm mb-1">Samsung 65" QLED 4K TV</h3>
+                <p class="text-slate-400 text-xs mb-2">Premium Smart TV</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-primary font-black text-lg">$1,299</span>
+                  <span class="text-slate-500 line-through text-xs">$1,999</span>
+                  <span class="text-green-400 text-xs font-bold">SAVE 35%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 2 -->
+          <div class="glass rounded-2xl p-5 hover:-translate-x-2 transition-all duration-300 fade-up delay-2">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-3xl">
+                🎧
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-bold text-sm mb-1">Sony WH-1000XM5 Headphones</h3>
+                <p class="text-slate-400 text-xs mb-2">Noise Cancelling</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-primary font-black text-lg">$279</span>
+                  <span class="text-slate-500 line-through text-xs">$399</span>
+                  <span class="text-green-400 text-xs font-bold">SAVE 30%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 3 -->
+          <div class="glass rounded-2xl p-5 hover:-translate-x-2 transition-all duration-300 fade-up delay-3">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-slate-500 to-slate-700 rounded-xl flex items-center justify-center text-3xl">
+                📱
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-bold text-sm mb-1">iPhone 15 Pro Max</h3>
+                <p class="text-slate-400 text-xs mb-2">Latest Model</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-primary font-black text-lg">$1,099</span>
+                  <span class="text-slate-500 line-through text-xs">$1,299</span>
+                  <span class="text-green-400 text-xs font-bold">SAVE 15%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 7: Stats/Trust Strip -->
+  <div class="w-full bg-gradient-to-r from-primaryDark to-primary py-4">
+    <div class="max-w-[1400px] mx-auto px-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-2xl font-black text-white mb-1">📦 2M+</div>
+          <div class="text-xs text-white opacity-80 uppercase tracking-wider">Products Listed</div>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-white mb-1">⭐ 4.9/5</div>
+          <div class="text-xs text-white opacity-80 uppercase tracking-wider">Customer Rating</div>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-white mb-1">🚚 50K+</div>
+          <div class="text-xs text-white opacity-80 uppercase tracking-wider">Orders Delivered</div>
+        </div>
+        <div>
+          <div class="text-2xl font-black text-white mb-1">🏪 500+</div>
+          <div class="text-xs text-white opacity-80 uppercase tracking-wider">Top Brands</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8: Shop by Category Section -->
+  <section class="max-w-[1400px] mx-auto px-4 py-16">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-extrabold">Shop by <span class="text-primary">Category</span></h2>
+      <a href="#" class="text-primary text-sm font-semibold hover:underline">View All →</a>
+    </div>
+    
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+      <!-- Category Card 1 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          📱
+        </div>
+        <h3 class="font-bold text-xs mb-1">Smartphones</h3>
+        <p class="text-muted text-[0.68rem]">450+ products</p>
+      </div>
+      
+      <!-- Category Card 2 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          ��
+        </div>
+        <h3 class="font-bold text-xs mb-1">Laptops</h3>
+        <p class="text-muted text-[0.68rem]">320+ products</p>
+      </div>
+      
+      <!-- Category Card 3 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          📺
+        </div>
+        <h3 class="font-bold text-xs mb-1">Smart TVs</h3>
+        <p class="text-muted text-[0.68rem]">180+ products</p>
+      </div>
+      
+      <!-- Category Card 4 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          🎧
+        </div>
+        <h3 class="font-bold text-xs mb-1">Audio & Sound</h3>
+        <p class="text-muted text-[0.68rem]">640+ products</p>
+      </div>
+      
+      <!-- Category Card 5 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          📷
+        </div>
+        <h3 class="font-bold text-xs mb-1">Cameras</h3>
+        <p class="text-muted text-[0.68rem]">210+ products</p>
+      </div>
+      
+      <!-- Category Card 6 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          ❄️
+        </div>
+        <h3 class="font-bold text-xs mb-1">Refrigerators</h3>
+        <p class="text-muted text-[0.68rem]">150+ products</p>
+      </div>
+      
+      <!-- Category Card 7 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          🌀
+        </div>
+        <h3 class="font-bold text-xs mb-1">Washing Machines</h3>
+        <p class="text-muted text-[0.68rem]">120+ products</p>
+      </div>
+      
+      <!-- Category Card 8 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-sky-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          💨
+        </div>
+        <h3 class="font-bold text-xs mb-1">Air Conditioners</h3>
+        <p class="text-muted text-[0.68rem]">95+ products</p>
+      </div>
+      
+      <!-- Category Card 9 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          🍳
+        </div>
+        <h3 class="font-bold text-xs mb-1">Kitchen Appliances</h3>
+        <p class="text-muted text-[0.68rem]">390+ products</p>
+      </div>
+      
+      <!-- Category Card 10 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          🎮
+        </div>
+        <h3 class="font-bold text-xs mb-1">Gaming</h3>
+        <p class="text-muted text-[0.68rem]">280+ products</p>
+      </div>
+      
+      <!-- Category Card 11 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          🖨️
+        </div>
+        <h3 class="font-bold text-xs mb-1">Printers</h3>
+        <p class="text-muted text-[0.68rem]">110+ products</p>
+      </div>
+      
+      <!-- Category Card 12 -->
+      <div class="category-card bg-white rounded-2xl p-4 border border-border text-center cursor-pointer">
+        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-2xl mx-auto mb-3">
+          🔌
+        </div>
+        <h3 class="font-bold text-xs mb-1">Accessories</h3>
+        <p class="text-muted text-[0.68rem]">1200+ products</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 9: Featured Products Grid (Best Sellers) -->
+  <section class="max-w-[1400px] mx-auto px-4 py-16 bg-surface">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-extrabold">Best <span class="text-primary">Sellers</span></h2>
+      <a href="#" class="text-primary text-sm font-semibold hover:underline">View All →</a>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="best-sellers-grid">
+      
+      <!-- Product Card 1 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-slate-100 to-slate-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">📱</span>
+          <span class="badge-hot absolute top-3 left-3">HOT</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">SAMSUNG</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Samsung Galaxy S24 Ultra</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(2.4k)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$1,199</span>
+            <span class="text-muted line-through text-xs">$1,399</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 14%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 1, name: 'Samsung Galaxy S24 Ultra', price: 1199, emoji: '📱'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 2 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-indigo-100 to-indigo-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">📺</span>
+          <span class="badge-sale absolute top-3 left-3">SALE</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">LG</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">LG 55" OLED C3 TV</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(1.8k)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$1,099</span>
+            <span class="text-muted line-through text-xs">$1,799</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 39%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 2, name: 'LG 55\" OLED C3 TV', price: 1099, emoji: '📺'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 3 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-purple-100 to-purple-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🎧</span>
+          <span class="badge-hot absolute top-3 left-3">HOT</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">SONY</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Sony WH-1000XM5</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(3.1k)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$279</span>
+            <span class="text-muted line-through text-xs">$399</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 30%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 3, name: 'Sony WH-1000XM5', price: 279, emoji: '🎧'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 4 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-slate-100 to-slate-300 h-48 flex items-center justify-center">
+          <span class="text-6xl">💻</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">APPLE</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">MacBook Air M3 15"</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(960)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$1,299</span>
+            <span class="text-muted line-through text-xs">$1,499</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 13%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 4, name: 'MacBook Air M3 15\"', price: 1299, emoji: '💻'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 5 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-blue-100 to-blue-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🌀</span>
+          <span class="badge-sale absolute top-3 left-3">SALE</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">DYSON</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Dyson V15 Detect</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(720)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$649</span>
+            <span class="text-muted line-through text-xs">$849</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 24%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 5, name: 'Dyson V15 Detect', price: 649, emoji: '🌀'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 6 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-red-100 to-red-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🍳</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">KITCHENAID</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">KitchenAid Stand Mixer</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(540)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$379</span>
+            <span class="text-muted line-through text-xs">$499</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 24%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 6, name: 'KitchenAid Stand Mixer', price: 379, emoji: '🍳'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 7 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-slate-100 to-slate-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🔊</span>
+          <span class="badge-hot absolute top-3 left-3">HOT</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">BOSE</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Bose SoundLink Max</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(890)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$399</span>
+            <span class="text-muted line-through text-xs">$499</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 20%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 7, name: 'Bose SoundLink Max', price: 399, emoji: '🔊'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product Card 8 -->
+      <div class="product-card bg-white rounded-2xl border border-border overflow-hidden">
+        <div class="relative bg-gradient-to-br from-amber-100 to-amber-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">📷</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">CANON</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Canon EOS R50 Camera</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(430)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$679</span>
+            <span class="text-muted line-through text-xs">$799</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">SAVE 15%</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 8, name: 'Canon EOS R50 Camera', price: 679, emoji: '📷'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- STEP 10: Flash Deal Banner -->
+  <section class="max-w-[1400px] mx-auto px-4 py-16" id="deals">
+    <div class="rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); position: relative;">
+      <div style="position: absolute; top: 50%; right: 20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(14,165,233,0.25) 0%, transparent 70%); filter: blur(60px); pointer-events: none;"></div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12 relative z-10">
+        
+        <!-- Left Side - Deal Info -->
+        <div>
+          <div class="inline-block px-4 py-2 rounded-full text-accent text-xs font-bold uppercase mb-4" style="background: rgba(249,115,22,0.15); letter-spacing: 0.5px;">
+            ⚡ DEAL OF THE DAY
+          </div>
+          
+          <h2 class="text-white font-black text-3xl lg:text-4xl mb-4">Samsung 85" Neo QLED 8K TV</h2>
+          
+          <p class="text-slate-300 mb-6 text-sm lg:text-base">Experience next-gen picture quality with AI-powered upscaling.</p>
+          
+          <div class="flex items-end gap-3 mb-6">
+            <span class="text-primary font-black text-4xl">$2,499</span>
+            <span class="text-slate-500 line-through text-xl mb-1">$3,999</span>
+          </div>
+          
+          <p class="text-green-400 font-bold text-lg mb-8">You Save $1,500</p>
+          
+          <!-- Countdown Timer -->
+          <div class="mb-8">
+            <p class="text-slate-400 text-sm mb-3 uppercase tracking-wider">Deal ends in:</p>
+            <div class="flex gap-3" id="countdown">
+              <div class="text-center px-4 py-3 rounded-xl" style="background: rgba(14,165,233,0.15);">
+                <div class="text-primary font-black text-2xl" id="hours">00</div>
+                <div class="text-slate-400 text-xs uppercase tracking-wider">Hours</div>
+              </div>
+              <div class="text-center px-4 py-3 rounded-xl" style="background: rgba(14,165,233,0.15);">
+                <div class="text-primary font-black text-2xl" id="minutes">00</div>
+                <div class="text-slate-400 text-xs uppercase tracking-wider">Mins</div>
+              </div>
+              <div class="text-center px-4 py-3 rounded-xl" style="background: rgba(14,165,233,0.15);">
+                <div class="text-primary font-black text-2xl" id="seconds">00</div>
+                <div class="text-slate-400 text-xs uppercase tracking-wider">Secs</div>
+              </div>
+            </div>
+          </div>
+          
+          <button class="btn-accent">
+            Grab This Deal →
+          </button>
+        </div>
+        
+        <!-- Right Side - Product Visual -->
+        <div class="flex flex-col items-center justify-center">
+          <div class="text-9xl mb-4" style="animation: bounceSlow 3s ease-in-out infinite;">
+            📺
+          </div>
+          <p class="text-accent font-bold text-lg mb-3">Only 7 units left!</p>
+          <div class="w-full max-w-xs bg-slate-700 rounded-full h-3 overflow-hidden">
+            <div class="bg-red-500 h-full rounded-full" style="width: 15%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 11: New Arrivals Product Grid -->
+  <section class="max-w-[1400px] mx-auto px-4 py-16">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+      <h2 class="text-2xl font-extrabold">New <span class="text-primary">Arrivals</span></h2>
+      
+      <!-- Filter Tabs -->
+      <div class="flex gap-2 overflow-x-auto">
+        <button class="tab-btn active" data-filter="all">All</button>
+        <button class="tab-btn" data-filter="phones">Phones</button>
+        <button class="tab-btn" data-filter="laptops">Laptops</button>
+        <button class="tab-btn" data-filter="tvs">TVs</button>
+        <button class="tab-btn" data-filter="audio">Audio</button>
+        <button class="tab-btn" data-filter="appliances">Appliances</button>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="new-arrivals-grid">
+      
+      <!-- Product 1 - Phones -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="phones">
+        <div class="relative bg-gradient-to-br from-blue-100 to-blue-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">📱</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">GOOGLE</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Google Pixel 9 Pro XL</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(310)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$999</span>
+            <span class="text-muted line-through text-xs">$1,099</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">9% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 9, name: 'Google Pixel 9 Pro XL', price: 999, emoji: '📱'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 2 - Laptops -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="laptops">
+        <div class="relative bg-gradient-to-br from-purple-100 to-purple-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">💻</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">DELL</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Dell XPS 15 OLED</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(180)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$1,799</span>
+            <span class="text-muted line-through text-xs">$2,199</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">18% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 10, name: 'Dell XPS 15 OLED', price: 1799, emoji: '💻'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 3 - TVs -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="tvs">
+        <div class="relative bg-gradient-to-br from-indigo-100 to-indigo-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">📺</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">HISENSE</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Hisense 75" U8 Mini-LED</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(240)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$899</span>
+            <span class="text-muted line-through text-xs">$1,199</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">25% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 11, name: 'Hisense 75\" U8 Mini-LED', price: 899, emoji: '📺'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 4 - Audio -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="audio">
+        <div class="relative bg-gradient-to-br from-pink-100 to-pink-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🎧</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">JABRA</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Jabra Evolve2 85</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(155)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$449</span>
+            <span class="text-muted line-through text-xs">$499</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">10% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 12, name: 'Jabra Evolve2 85', price: 449, emoji: '🎧'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 5 - Phones -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="phones">
+        <div class="relative bg-gradient-to-br from-amber-100 to-amber-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">📷</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">NIKON</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Nikon Z6 III</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(200)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$2,199</span>
+            <span class="text-muted line-through text-xs">$2,499</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">12% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 13, name: 'Nikon Z6 III', price: 2199, emoji: '📷'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 6 - Appliances -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="appliances">
+        <div class="relative bg-gradient-to-br from-cyan-100 to-cyan-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">❄️</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">HAIER</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Haier 4-Door French Door</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(95)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$1,099</span>
+            <span class="text-muted line-through text-xs">$1,499</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">27% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 14, name: 'Haier 4-Door French Door', price: 1099, emoji: '❄️'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 7 - Appliances -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="appliances">
+        <div class="relative bg-gradient-to-br from-teal-100 to-teal-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🌀</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">MIELE</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Miele W1 Washing Machine</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★★</div>
+            <span class="text-muted text-xs">(130)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$1,299</span>
+            <span class="text-muted line-through text-xs">$1,799</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">28% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 15, name: 'Miele W1 Washing Machine', price: 1299, emoji: '🌀'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+      <!-- Product 8 - Appliances -->
+      <div class="product-item product-card bg-white rounded-2xl border border-border overflow-hidden" data-category="appliances">
+        <div class="relative bg-gradient-to-br from-orange-100 to-orange-200 h-48 flex items-center justify-center">
+          <span class="text-6xl">🍳</span>
+          <span class="badge-new absolute top-3 left-3">NEW</span>
+          <button class="wishlist-btn absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-muted hover:text-red-500 transition-colors" onclick="toggleWishlist(this)">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-[0.65rem] text-muted uppercase tracking-wide mb-1">NINJA</p>
+          <h3 class="font-bold text-sm mb-2 line-clamp-2">Ninja Foodi Smart XL Grill</h3>
+          <div class="flex items-center gap-1 mb-2">
+            <div class="text-amber-400 text-xs">★★★★☆</div>
+            <span class="text-muted text-xs">(460)</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-dark font-black text-lg">$229</span>
+            <span class="text-muted line-through text-xs">$299</span>
+          </div>
+          <span class="text-green-500 text-xs font-bold mb-3 block">23% OFF</span>
+          <button class="btn-primary w-full text-sm add-to-cart-btn" 
+                  onclick="addToCart({id: 16, name: 'Ninja Foodi Smart XL Grill', price: 229, emoji: '🍳'})">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- STEP 12: Top Brands Strip -->
+  <section class="w-full bg-white border-t border-b border-border py-12">
+    <div class="max-w-[1400px] mx-auto px-4">
+      <h2 class="text-2xl font-extrabold text-center mb-3">Shop by <span class="text-primary">Brand</span></h2>
+      <p class="text-muted text-center text-sm mb-8">Explore products from the world's most trusted technology brands.</p>
+      
+      <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">SAMSUNG</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">APPLE</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">SONY</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">LG</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">PHILIPS</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">PANASONIC</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">BOSCH</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">DYSON</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">DELL</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">HP</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">CANON</div>
+        <div class="brand-logo text-muted hover:text-primary transition-colors cursor-pointer font-black text-lg uppercase tracking-wider">BOSE</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 13: Service Features/Trust Badges -->
+  <section class="max-w-[1400px] mx-auto px-4 py-16">
+    <h2 class="text-2xl font-extrabold text-center mb-12">Why Choose <span class="text-primary">EazzyBizzy?</span></h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- Feature 1 -->
+      <div class="bg-white rounded-2xl border border-border p-6 hover:border-primary hover:shadow-lg transition-all">
+        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-3xl mb-4">
+          🚚
+        </div>
+        <h3 class="font-bold text-base mb-2">Fast & Free Delivery</h3>
+        <p class="text-muted text-sm leading-relaxed">Free shipping on all orders over $49. Same-day delivery in select cities.</p>
+      </div>
+      
+      <!-- Feature 2 -->
+      <div class="bg-white rounded-2xl border border-border p-6 hover:border-primary hover:shadow-lg transition-all">
+        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-3xl mb-4">
+          🛡️
+        </div>
+        <h3 class="font-bold text-base mb-2">2-Year Warranty</h3>
+        <p class="text-muted text-sm leading-relaxed">Every product comes with a minimum 2-year manufacturer warranty.</p>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div class="bg-white rounded-2xl border border-border p-6 hover:border-primary hover:shadow-lg transition-all">
+        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-3xl mb-4">
+          🔄
+        </div>
+        <h3 class="font-bold text-base mb-2">30-Day Returns</h3>
+        <p class="text-muted text-sm leading-relaxed">Not satisfied? Return any item within 30 days, no questions asked.</p>
+      </div>
+      
+      <!-- Feature 4 -->
+      <div class="bg-white rounded-2xl border border-border p-6 hover:border-primary hover:shadow-lg transition-all">
+        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-3xl mb-4">
+          💬
+        </div>
+        <h3 class="font-bold text-base mb-2">24/7 Customer Support</h3>
+        <p class="text-muted text-sm leading-relaxed">Our expert support team is available around the clock to help you.</p>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- STEP 14: Newsletter Signup Banner -->
+  <section class="max-w-[1400px] mx-auto px-4 py-16">
+    <div class="rounded-3xl bg-gradient-to-r from-primary to-primaryDark p-12 text-center">
+      <div class="text-6xl mb-4">📧</div>
+      <h2 class="text-white font-black text-3xl mb-4">Stay Ahead of the Deals</h2>
+      <p class="text-white opacity-90 mb-8 max-w-2xl mx-auto">Subscribe to get exclusive offers, new arrivals, and tech news delivered straight to your inbox.</p>
+      
+      <form class="max-w-md mx-auto mb-4" id="newsletter-form">
+        <div class="flex gap-2">
+          <input 
+            type="email" 
+            placeholder="📧 Enter your email address" 
+            class="flex-1 px-6 py-3 rounded-full bg-white bg-opacity-20 border border-white border-opacity-30 text-white placeholder-white placeholder-opacity-70 outline-none focus:bg-opacity-30 transition-all"
+            id="newsletter-email"
+            required
+          >
+          <button type="submit" class="px-6 py-3 bg-white text-primaryDark font-bold rounded-full hover:shadow-lg transition-all">
+            Subscribe →
+          </button>
+        </div>
+      </form>
+      
+      <p class="text-white text-xs opacity-75">🔒 No spam. Unsubscribe anytime. Join 250,000+ subscribers.</p>
+    </div>
+  </section>
+
+  <!-- STEP 15: Footer -->
+  <footer class="w-full bg-dark text-white pt-16 pb-8">
+    <div class="max-w-[1400px] mx-auto px-4">
+      
+      <!-- Top Section - 4 Columns -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        
+        <!-- Column 1 - Brand -->
+        <div>
+          <div class="flex items-center gap-1 mb-4">
+            <span class="text-2xl">⚡</span>
+            <a href="#" class="text-xl font-black tracking-tight">
+              <span class="text-primary">Eazzy</span><span class="text-accent">Bizzy</span>
+            </a>
+          </div>
+          <p class="text-slate-400 text-sm mb-6">Your one-stop shop for electronics and home appliances.</p>
+          
+          <div class="flex gap-3">
+            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Column 2 - Quick Links -->
+        <div>
+          <h3 class="font-bold text-base mb-4">Quick Links</h3>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="#" class="hover:text-primary transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Careers</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Press Room</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Investor Relations</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Affiliate Program</a></li>
+          </ul>
+        </div>
+        
+        <!-- Column 3 - Customer Service -->
+        <div>
+          <h3 class="font-bold text-base mb-4">Customer Service</h3>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="#" class="hover:text-primary transition-colors">Track My Order</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Returns & Refunds</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">FAQs</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Shipping Info</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Warranty Claims</a></li>
+            <li><a href="#" class="hover:text-primary transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <!-- Column 4 - Contact Info -->
+        <div>
+          <h3 class="font-bold text-base mb-4">Contact Info</h3>
+          <ul class="space-y-3 text-sm text-slate-400">
+            <li class="flex gap-2">
+              <span>📍</span>
+              <span>123 Tech Boulevard, Silicon Valley, CA 94025</span>
+            </li>
+            <li class="flex gap-2">
+              <span>📞</span>
+              <span>1-800-EAZZY-BIZ</span>
+            </li>
+            <li class="flex gap-2">
+              <span>✉️</span>
+              <span>support@eazzybizzy.com</span>
+            </li>
+            <li class="flex gap-2">
+              <span>⏰</span>
+              <span>Mon–Sat 8AM–8PM EST</span>
+            </li>
+          </ul>
+        </div>
+        
+      </div>
+      
+      <!-- Bottom Bar -->
+      <div class="border-t border-slate-800 pt-8">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+          
+          <div>
+            © 2025 EazzyBizzy Inc. All rights reserved.
+          </div>
+          
+          <div class="flex gap-4">
+            <a href="#" class="hover:text-primary transition-colors">Privacy Policy</a>
+            <span>·</span>
+            <a href="#" class="hover:text-primary transition-colors">Terms of Service</a>
+            <span>·</span>
+            <a href="#" class="hover:text-primary transition-colors">Cookie Policy</a>
+          </div>
+          
+          <div class="flex gap-3 flex-wrap justify-center">
+            <span class="px-3 py-1 bg-slate-800 rounded text-xs font-bold">VISA</span>
+            <span class="px-3 py-1 bg-slate-800 rounded text-xs font-bold">Mastercard</span>
+            <span class="px-3 py-1 bg-slate-800 rounded text-xs font-bold">PayPal</span>
+            <span class="px-3 py-1 bg-slate-800 rounded text-xs font-bold">Apple Pay</span>
+            <span class="px-3 py-1 bg-slate-800 rounded text-xs font-bold">Google Pay</span>
+            <span class="px-3 py-1 bg-slate-800 rounded text-xs font-bold">Crypto</span>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </footer>
+
+  <!-- STEP 16: Cart Sidebar (Slide-in Panel) -->
+  <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+  
+  <div class="cart-sidebar" id="cart-sidebar">
+    
+    <!-- Cart Header -->
+    <div class="p-6 border-b border-border flex items-center justify-between">
+      <h3 class="font-bold text-lg">
+        🛒 Your Cart (<span id="cart-count">0</span> items)
+      </h3>
+      <button onclick="closeCart()" class="w-8 h-8 hover:bg-surface rounded-full flex items-center justify-center transition-colors">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+    </div>
+    
+    <!-- Cart Items Area (Scrollable) -->
+    <div class="flex-1 overflow-y-auto p-6" id="cart-items">
+      <!-- Empty cart state -->
+      <div class="flex flex-col items-center justify-center h-full text-center" id="empty-cart">
+        <div class="text-6xl mb-4 opacity-20">🛒</div>
+        <p class="text-muted mb-4">Your cart is empty</p>
+        <button onclick="closeCart()" class="btn-primary">
+          Start Shopping →
+        </button>
+      </div>
+      
+      <!-- Cart items will be dynamically inserted here -->
+    </div>
+    
+    <!-- Cart Footer -->
+    <div class="border-t border-border p-6" id="cart-footer" style="display: none;">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-semibold">Subtotal</span>
+        <span class="font-black text-xl" id="cart-subtotal">$0.00</span>
+      </div>
+      <p class="text-sm text-green-500 mb-4">🚚 FREE shipping on this order!</p>
+      <button class="btn-primary w-full mb-3">
+        Proceed to Checkout →
+      </button>
+      <button onclick="closeCart()" class="text-primary text-sm w-full text-center">
+        Continue Shopping
+      </button>
+    </div>
+    
+  </div>
+
+  <!-- STEP 17: Toast Notification System -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle" id="toast-icon"></i>
+    <span id="toast-message">Success!</span>
+  </div>
+
+  <!-- STEP 19: JavaScript Functionality -->
+  <script>
+    // ========== GLOBAL VARIABLES ==========
+    let cart = [];
+    
+    // ========== 1. NAVBAR SCROLL EFFECT ==========
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+    
+    // ========== 2. MOBILE MENU TOGGLE ==========
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+      });
+    }
+    
+    // ========== 3. CART STATE MANAGEMENT ==========
+    function addToCart(product) {
+      const existingItem = cart.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        existingItem.qty += 1;
+      } else {
+        cart.push({
+          ...product,
+          qty: 1
+        });
+      }
+      
+      updateCartBadge();
+      renderCart();
+      showToast(`✓ ${product.name} added to cart!`, 'success');
+      
+      // Animate button
+      const button = event.target;
+      const originalText = button.innerHTML;
+      button.innerHTML = '✓ Added!';
+      button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+      
+      setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = '';
+      }, 1500);
+    }
+    
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCartBadge();
+      renderCart();
+      showToast('Item removed from cart', 'info');
+    }
+    
+    function updateQty(id, delta) {
+      const item = cart.find(item => item.id === id);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          removeFromCart(id);
+        } else {
+          renderCart();
+          updateCartBadge();
+        }
+      }
+    }
+    
+    function renderCart() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const emptyCart = document.getElementById('empty-cart');
+      const cartFooter = document.getElementById('cart-footer');
+      const cartCount = document.getElementById('cart-count');
+      
+      if (cart.length === 0) {
+        emptyCart.style.display = 'flex';
+        cartFooter.style.display = 'none';
+        cartItemsContainer.innerHTML = '';
+        cartItemsContainer.appendChild(emptyCart);
+      } else {
+        emptyCart.style.display = 'none';
+        cartFooter.style.display = 'block';
+        
+        cartItemsContainer.innerHTML = cart.map(item => `
+          <div class="flex gap-4 mb-4 pb-4 border-b border-border">
+            <div class="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center text-3xl flex-shrink-0">
+              ${item.emoji}
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-sm mb-1 truncate">${item.name}</h4>
+              <p class="text-primary font-bold text-sm mb-2">$${item.price.toLocaleString()}</p>
+              <div class="flex items-center gap-2">
+                <button 
+                  onclick="updateQty(${item.id}, -1)"
+                  class="w-7 h-7 bg-surface rounded flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                >
+                  <i class="fas fa-minus text-xs"></i>
+                </button>
+                <span class="w-8 text-center font-semibold">${item.qty}</span>
+                <button 
+                  onclick="updateQty(${item.id}, 1)"
+                  class="w-7 h-7 bg-surface rounded flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                >
+                  <i class="fas fa-plus text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <button 
+              onclick="removeFromCart(${item.id})"
+              class="text-muted hover:text-red-500 transition-colors self-start"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+      
+      cartCount.textContent = cart.length;
+      updateCartSubtotal();
+    }
+    
+    function updateCartBadge() {
+      const badge = document.getElementById('cart-badge');
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      badge.textContent = totalItems;
+    }
+    
+    function calcTotal() {
+      return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    }
+    
+    function updateCartSubtotal() {
+      const subtotal = document.getElementById('cart-subtotal');
+      if (subtotal) {
+        subtotal.textContent = '$' + calcTotal().toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      }
+    }
+    
+    // ========== 4. CART SIDEBAR TOGGLE ==========
+    function openCart() {
+      document.getElementById('cart-overlay').classList.add('active');
+      document.getElementById('cart-sidebar').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeCart() {
+      document.getElementById('cart-overlay').classList.remove('active');
+      document.getElementById('cart-sidebar').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    document.getElementById('cart-btn').addEventListener('click', openCart);
+    
+    // ========== 5. WISHLIST TOGGLE ==========
+    function toggleWishlist(btn) {
+      btn.classList.toggle('active');
+      const icon = btn.querySelector('i');
+      
+      if (btn.classList.contains('active')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        showToast('♥ Added to wishlist!', 'success');
+      } else {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        showToast('Removed from wishlist', 'info');
+      }
+    }
+    
+    // ========== 6. COUNTDOWN TIMER ==========
+    function startCountdown(endTime) {
+      const updateTimer = () => {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+        
+        if (distance < 0) {
+          document.getElementById('hours').textContent = '00';
+          document.getElementById('minutes').textContent = '00';
+          document.getElementById('seconds').textContent = '00';
+          return;
+        }
+        
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      };
+      
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+    
+    // Initialize countdown (12 hours from now)
+    const countdownEndTime = new Date().getTime() + (12 * 60 * 60 * 1000);
+    startCountdown(countdownEndTime);
+    
+    // ========== 7. PRODUCT TAB FILTER (New Arrivals) ==========
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active tab
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const filter = btn.getAttribute('data-filter');
+        const products = document.querySelectorAll('#new-arrivals-grid .product-item');
+        
+        products.forEach(product => {
+          const category = product.getAttribute('data-category');
+          
+          if (filter === 'all' || category === filter) {
+            product.classList.remove('hidden');
+            setTimeout(() => {
+              product.style.opacity = '1';
+              product.style.transform = 'scale(1)';
+            }, 10);
+          } else {
+            product.style.opacity = '0';
+            product.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+              product.classList.add('hidden');
+            }, 300);
+          }
+        });
+      });
+    });
+    
+    // ========== 8. TOAST SYSTEM ==========
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastIcon = document.getElementById('toast-icon');
+      const toastMessage = document.getElementById('toast-message');
+      
+      // Set icon based on type
+      toast.className = 'toast';
+      if (type === 'success') {
+        toast.classList.add('toast-success');
+        toastIcon.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        toast.classList.add('toast-error');
+        toastIcon.className = 'fas fa-times-circle';
+      } else {
+        toast.classList.add('toast-info');
+        toastIcon.className = 'fas fa-info-circle';
+      }
+      
+      toastMessage.textContent = message;
+      
+      // Show toast
+      toast.classList.add('show');
+      
+      // Hide after 2.5 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+    
+    // ========== 9. SEARCH FUNCTIONALITY ==========
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.closest('form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (query) {
+          showToast(`Searching for: ${query}`, 'info');
+        }
+      });
+    }
+    
+    // ========== 10. NEWSLETTER FORM ==========
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('newsletter-email').value;
+        
+        // Simple email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(email)) {
+          showToast('✓ Subscribed successfully!', 'success');
+          newsletterForm.reset();
+        } else {
+          showToast('Please enter a valid email address', 'error');
+        }
+      });
+    }
+    
+    // ========== 11. SMOOTH SCROLL FOR ANCHOR LINKS ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#' && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+    
+    // ========== 12. INTERSECTION OBSERVER (Fade-up animations) ==========
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    
+    // Observe elements with fade-up class
+    document.querySelectorAll('.fade-up').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+      el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+      observer.observe(el);
+    });
+    
+    // Initialize cart display
+    renderCart();
+  </script>
+
+</body>
+</html>
