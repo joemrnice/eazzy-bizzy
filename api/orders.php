@@ -76,7 +76,7 @@ try {
             $data = json_decode(file_get_contents('php://input'), true);
             
             // Validate required fields
-            $required = ['shipping_name', 'shipping_email', 'shipping_phone', 'shipping_address', 'shipping_city', 'shipping_state', 'shipping_zip', 'payment_method'];
+            $required = ['email', 'payment_method'];
             $errors = validateRequired($data, $required);
             
             if (!empty($errors)) {
@@ -84,7 +84,7 @@ try {
             }
             
             // Validate email
-            if (!validateEmail($data['shipping_email'])) {
+            if (!validateEmail($data['email'])) {
                 errorResponse('Invalid email address', [], 422);
             }
             
@@ -126,7 +126,7 @@ try {
                     'variant_name' => $item['variant_name'] ?? null,
                     'quantity' => $item['quantity'],
                     'price' => $price,
-                    'total' => $itemTotal,
+                    'subtotal' => $itemTotal,
                 ];
             }
             
@@ -154,36 +154,17 @@ try {
             // Create order
             $orderData = [
                 'user_id' => $userId,
-                'order_status' => 'pending',
+                'guest_email' => $userId ? null : sanitize($data['email']),
+                'status' => 'pending',
                 'payment_method' => sanitize($data['payment_method']),
                 'payment_status' => 'pending',
-                'shipping_name' => sanitize($data['shipping_name']),
-                'shipping_email' => sanitize($data['shipping_email']),
-                'shipping_phone' => sanitize($data['shipping_phone']),
-                'shipping_address' => sanitize($data['shipping_address']),
-                'shipping_city' => sanitize($data['shipping_city']),
-                'shipping_state' => sanitize($data['shipping_state']),
-                'shipping_zip' => sanitize($data['shipping_zip']),
-                'shipping_country' => sanitize($data['shipping_country'] ?? 'USA'),
-                'billing_same_as_shipping' => !empty($data['billing_same_as_shipping']) ? 1 : 0,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
-                'shipping_fee' => $shippingFee,
+                'shipping' => $shippingFee,
                 'tax' => $tax,
                 'total' => $total,
-                'coupon_id' => $couponId,
                 'notes' => sanitize($data['notes'] ?? ''),
             ];
-            
-            // Add billing address if different
-            if (empty($data['billing_same_as_shipping'])) {
-                $billingFields = ['billing_name', 'billing_email', 'billing_phone', 'billing_address', 'billing_city', 'billing_state', 'billing_zip'];
-                foreach ($billingFields as $field) {
-                    if (isset($data[$field])) {
-                        $orderData[$field] = sanitize($data[$field]);
-                    }
-                }
-            }
             
             $orderId = $orderModel->create($orderData);
             
@@ -198,7 +179,7 @@ try {
             }
             
             // Record coupon usage
-            if ($couponId) {
+            if ($couponId && $userId) {
                 $couponModel->recordUsage($couponId, $userId, $orderId);
             }
             
@@ -217,7 +198,7 @@ try {
                 <p>We'll send you a shipping confirmation email when your order ships.</p>
                 <p><a href='" . $_ENV['APP_URL'] . "/orders/{$order['order_number']}' class='button'>View Order</a></p>
             ");
-            sendEmail($data['shipping_email'], 'Order Confirmation - ' . $order['order_number'], $emailBody);
+            sendEmail($data['email'], 'Order Confirmation - ' . $order['order_number'], $emailBody);
             
             successResponse([
                 'order' => $order,
@@ -251,7 +232,7 @@ try {
             }
             
             // Check if order can be cancelled
-            if (!in_array($order['order_status'], ['pending', 'processing'])) {
+            if (!in_array($order['status'], ['pending', 'processing'])) {
                 errorResponse('Order cannot be cancelled', [], 400);
             }
             
@@ -290,7 +271,7 @@ try {
             
             successResponse([
                 'order_number' => $order['order_number'],
-                'status' => $order['order_status'],
+                'status' => $order['status'],
                 'payment_status' => $order['payment_status'],
                 'created_at' => $order['created_at'],
                 'tracking_number' => $order['tracking_number'] ?? null,

@@ -61,7 +61,7 @@ try {
             $data = json_decode(file_get_contents('php://input'), true);
             
             // Validate required fields
-            $required = ['product_id', 'rating', 'review'];
+            $required = ['product_id', 'rating', 'body'];
             $errors = validateRequired($data, $required);
             
             if (!empty($errors)) {
@@ -88,7 +88,7 @@ try {
                 'product_id' => (int)$data['product_id'],
                 'rating' => $rating,
                 'title' => sanitize($data['title'] ?? ''),
-                'review' => sanitize($data['review']),
+                'body' => sanitize($data['body']),
                 'status' => 'pending',
                 'created_at' => date('Y-m-d H:i:s'),
             ];

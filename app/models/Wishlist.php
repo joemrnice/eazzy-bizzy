@@ -17,7 +17,7 @@ class Wishlist {
         $sql = "SELECT w.*, p.name, p.slug, p.price, p.sale_price, p.stock,
                 (SELECT image FROM product_images WHERE product_id = p.id AND is_primary = 1 LIMIT 1) as image,
                 b.name as brand_name
-                FROM wishlists w
+                FROM wishlist w
                 JOIN products p ON w.product_id = p.id
                 LEFT JOIN brands b ON p.brand_id = b.id
                 WHERE w.user_id = ?
@@ -28,7 +28,7 @@ class Wishlist {
     
     public function add($userId, $productId) {
         // Check if already exists
-        $existing = $this->db->selectOne('wishlists', [
+        $existing = $this->db->selectOne('wishlist', [
             'user_id' => $userId,
             'product_id' => $productId
         ]);
@@ -37,7 +37,7 @@ class Wishlist {
             return $existing['id'];
         }
         
-        return $this->db->insert('wishlists', [
+        return $this->db->insert('wishlist', [
             'user_id' => $userId,
             'product_id' => $productId,
             'created_at' => date('Y-m-d H:i:s')
@@ -45,14 +45,14 @@ class Wishlist {
     }
     
     public function remove($userId, $productId) {
-        return $this->db->delete('wishlists', [
+        return $this->db->delete('wishlist', [
             'user_id' => $userId,
             'product_id' => $productId
         ]);
     }
     
     public function isInWishlist($userId, $productId) {
-        $item = $this->db->selectOne('wishlists', [
+        $item = $this->db->selectOne('wishlist', [
             'user_id' => $userId,
             'product_id' => $productId
         ]);
@@ -61,7 +61,7 @@ class Wishlist {
     }
     
     public function getCount($userId) {
-        $sql = "SELECT COUNT(*) as total FROM wishlists WHERE user_id = ?";
+        $sql = "SELECT COUNT(*) as total FROM wishlist WHERE user_id = ?";
         $result = $this->db->query($sql, [$userId])->fetch();
         return $result['total'] ?? 0;
     }
