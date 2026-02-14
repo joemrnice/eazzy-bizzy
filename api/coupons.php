@@ -46,7 +46,6 @@ try {
                     'code' => $result['coupon']['code'],
                     'type' => $result['coupon']['type'],
                     'value' => $result['coupon']['value'],
-                    'description' => $result['coupon']['description'],
                 ],
             ], 'Coupon applied successfully');
             break;

@@ -274,7 +274,6 @@ try {
                 'status' => $order['status'],
                 'payment_status' => $order['payment_status'],
                 'created_at' => $order['created_at'],
-                'tracking_number' => $order['tracking_number'] ?? null,
             ]);
             break;
             
